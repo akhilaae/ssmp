@@ -1,0 +1,16 @@
+mov ax,3000h
+mov ds,ax
+xor ax,ax
+mov al,20h
+mov bl,64h
+div bl
+mov al,ah
+mov ah,00h
+mov bl,0ah
+div bl
+mov cl,04h
+shl al,cl
+or al,ah
+mov [2000h],al
+mov ax,4ch
+int 21h
