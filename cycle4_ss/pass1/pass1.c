@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-int start,locctr,optab_operand,operand_add;
+int start,optab_operand,operand_add,locctr;
 char label[10],opcode[10],operand[10],optab_opcode[10];
 void main(){
     FILE *f1,*f2,*f3,*f4;
@@ -53,6 +53,9 @@ void main(){
         fscanf(f1,"%s\t%s\t%s",label,opcode,operand);
     }
     printf("length : %d",locctr-start);
+    FILE *f5=fopen("length.txt","w");
+    fprintf(f5,"%d",locctr-start);
+    fclose(f5);
     fclose(f1);
     fclose(f3);
     fclose(f4);
