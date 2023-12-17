@@ -3,20 +3,20 @@
 #include <string.h>
 void main(){
     FILE *f1,*f2;
-    char type[1],name[10],rectype[1],mask[12]={0},maskbit[3],opcode[2],len[6];
-    int offset,newloc,add;
-    int start,length,objcode,flag;
+    char rectype[1],name[10],opcode[10],maskbit[3],mask[12]={0};
+    int length,start,objcode,locctr,offset;
     f1=fopen("input.txt","r");
     f2=fopen("output.txt","w");
-    fscanf(f1,"%s %s %x %x",type,name,&start,&length);
-    printf("Enter new loc : ");
-    scanf("%x",&newloc);
-    offset=newloc-start;
+    printf("new address: ");
+    scanf("%x",&locctr);
+    fscanf(f1,"%s %s %x %x",rectype,name,&start,&length);
+    offset=locctr-start;
+    fscanf(f1,"%s",rectype);
     while(!feof(f1)){
-        flag=0;
-        fscanf(f1,"%s %x %x",rectype,&add,&length);
-        newloc=add+offset;
+        int flag=0;
+        fscanf(f1,"%x %x",&start,&length);
         if(strcmp(rectype,"T")==0){
+            locctr=start+offset;
             fscanf(f1,"%s",maskbit);
             for(int i=0;i<3;i++){
                 switch(maskbit[i]){
@@ -88,7 +88,7 @@ void main(){
             }
             for(int i=0;i<12;i++){
                 fscanf(f1,"%s",opcode);
-                if(strcmp(rectype,"T")==0||strcmp(rectype,"E")==0){
+                if(strcmp(opcode,"T")==0||strcmp(opcode,"E")==0){
                     flag=1;
                     break;
                 }
@@ -96,13 +96,15 @@ void main(){
                 if(mask[i]=='1'){
                     objcode+=offset;
                 }
-                fprintf(f2,"%x\t%s%x\n",newloc,opcode,objcode);
-                sprintf(len,"%d",objcode);
-                newloc+=1+strlen(len)/2;
+                fprintf(f2,"%x\t%s%x\n",locctr,opcode,objcode);
+                locctr+=3;
             }
         }
         if(flag==1){
             strcpy(rectype,opcode);
+        }
+        else{
+            fscanf(f1,"%s",rectype);
         }
     }
     fclose(f1);
