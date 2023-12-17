@@ -1,8 +1,8 @@
 data segment
-    str db 'HILL'
-    substr db 'AK'
-    len1 dw $-str
-    len2 dw $-substr 
+    str db 'HILL$'
+    substr db 'LL$'
+    len1 dw 04
+    len2 dw 02 
     msg1 db 'string found$'
     msg2 db 'string not found$'
 data ends
@@ -10,24 +10,29 @@ code segment
     start:
         mov ax,data
         mov ds,ax 
-        mov es,ax
+        ;mov es,ax
+        mov dx,len1 
         mov cx,len2
-        mov dx,len1
         lea si,str
-        mov bx,cx            
-        
-      x:  
-        lea di,substr
-        xor cx,cx
-        mov cx,len2
-        cld
-        repe cmpsb  
-        ;inc si   
-        jz found
+        lea di,substr 
+      x:
+        mov al,[si]                                                                      
+        mov ah,[di]
+        cmp al,ah
+        je innerloop
+        inc si
         dec dx
-        cmp dx,bx
-        jl not_found
-        jmp x 
+        cmp dx,00h
+        jnz x
+        jmp not_found
+      innerloop:
+        inc di
+        inc si
+        dec cx
+        dec dx
+        cmp cx,00h
+        jnz x 
+        jmp found 
       found:
         lea dx,msg1
         mov ah,09h
@@ -46,5 +51,7 @@ end start
         
         
         
+    
+            
     
         
