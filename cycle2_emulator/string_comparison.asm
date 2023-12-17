@@ -11,7 +11,7 @@ code segment
     mov ds,ax
     mov es,ax
     lea si,string1
-    lea si,string2
+    lea di,string2
     mov cx,count
     repe cmpsb
     cmp cx,0
