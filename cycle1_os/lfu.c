@@ -1,5 +1,5 @@
 #include <stdio.h>
-int max,len,seq[10],frame[5],pagefault=0,i,j,k,count=0;
+int max,len,seq[10],frame[5],pagefault=0,i,j,k,count=0,a[10];
 int f=-1,r=-1;
 int present(int x){
     for(j=0;j<max;j++){
@@ -20,26 +20,25 @@ void push(int x){
 void pop(){
     f=(f+1)%max;
 }
-int least_recent(int value){
-    int index=value-1,s=0;
-    for(int p=0;p<max;p++){
+int least_frequent(int index){
+    int small=-1,s;
+    for(j=0;j<max;j++){
+        int c=0;
         for(k=index-1;k>0;k--){
-            if(seq[k]==frame[p] && k<=index){
-                s=1;
-                index=k;
-                break;
-            }
-            if(seq[k]==frame[p] && k>index){
-                break;
+            if(seq[k]==frame[j]){
+                c++;
             }
         }
+        a[j]=c;
     }
-    if(s==0){
-        return -1;
+    for(int p=0;p<max;p++){
+        if(a[small]>=a[p]){
+            small=p;
+        }
     }
-    return index;
+    return small;
 }
-void lru(){
+void lfu(){
     for(i=0;i<len;i++){
         if(present(seq[i])==0){
             if(count!=max){
@@ -48,7 +47,7 @@ void lru(){
                 pagefault++;
             }
             else{
-                int index=least_recent(i);
+                int index=least_frequent(i);
                 if(index==-1){
                     pop();
                     push(seq[i]);
@@ -67,7 +66,6 @@ void lru(){
             r=(r+1)%max;
         }
     }
-    
 }
 void main(){
     printf("max no of frames : ");
@@ -81,7 +79,7 @@ void main(){
     for(int i=0;i<len;i++){
         scanf("%d",&seq[i]);
     }
-    lru();
+    lfu();
     printf("count : %d",pagefault);
 }
 //7 0 1 2 0 3 0 4 2 3 0 3 2
